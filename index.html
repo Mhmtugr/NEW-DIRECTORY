@@ -5,138 +5,134 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="ElektroTrack - Orta Gerilim Hücre İmalat Takip Sistemi">
     <title>ElektroTrack</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Özel CSS -->
     <link rel="stylesheet" href="core/styles/main.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <div id="app">
         <!-- Demo Mod Bildirimi -->
-        <div id="demo-mode-notification" style="display: none; background-color: #fff3cd; color: #856404; padding: 10px; text-align: center; font-weight: 500; position: fixed; bottom: 0; right: 0; left: 0; z-index: 1000;">
+        <div id="demo-mode-notification" class="alert alert-warning text-center" style="display: none;">
             Bu uygulama şu anda demo modunda çalışıyor. Tüm veriler yerel olarak saklanır.
-            <button onclick="this.parentElement.style.display='none'" style="background: none; border: none; color: #856404; cursor: pointer; font-weight: bold; float: right;">&times;</button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
 
         <!-- Giriş Sayfası -->
-        <div id="login-page" class="login-container">
-            <div class="login-card">
-                <div class="login-header">
-                    <div class="login-logo">
-                        <div class="login-logo-icon">
-                            <i class="fas fa-bolt"></i>
+        <div id="login-page" class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title text-center mb-4">Giriş Yap</h2>
+                            <form id="login-form">
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Kullanıcı Adı / E-posta</label>
+                                    <input type="text" class="form-control" id="username" placeholder="Kullanıcı adınızı veya e-postanızı girin" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Şifre</label>
+                                    <input type="password" class="form-control" id="password" placeholder="Şifrenizi girin" required>
+                                </div>
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="remember">
+                                    <label class="form-check-label" for="remember">Beni hatırla</label>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary">Giriş Yap</button>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="demoLogin()">
+                                        <i class="fas fa-user-check"></i> Demo Hesabı ile Giriş
+                                    </button>
+                                </div>
+                                <div class="mt-3 text-center">
+                                    <a href="#" onclick="showForgotPassword()">Şifremi unuttum</a> | <a href="#" onclick="showRegister()">Kayıt Ol</a>
+                                </div>
+                            </form>
                         </div>
-                        <div class="login-logo-text">ElektroTrack</div>
-                    </div>
-                    <h1 class="login-title">Giriş Yap</h1>
-                    <p class="login-subtitle">Orta Gerilim Hücre İmalat Takip Sistemi</p>
-                </div>
-                <div class="login-body">
-                    <form id="login-form">
-                        <div class="login-form-group">
-                            <label class="login-label" for="username">Kullanıcı Adı / E-posta</label>
-                            <input type="text" id="username" class="login-input" placeholder="Kullanıcı adınızı veya e-postanızı girin" required>
-                        </div>
-                        <div class="login-form-group">
-                            <label class="login-label" for="password">Şifre</label>
-                            <input type="password" id="password" class="login-input" placeholder="Şifrenizi girin" required>
-                        </div>
-                        <div class="login-options">
-                            <div class="login-remember">
-                                <input type="checkbox" id="remember">
-                                <label for="remember">Beni hatırla</label>
-                            </div>
-                            <a href="#" class="login-forgot" onclick="showForgotPassword()">Şifremi unuttum</a>
-                        </div>
-                        <button type="submit" class="login-button">Giriş Yap</button>
-                    </form>
-                    
-                    <div class="login-footer">
-                        Hesabınız yok mu? <a href="#" onclick="showRegister()">Kayıt Ol</a>
-                    </div>
-
-                    <!-- Demo Giriş Butonu -->
-                    <div style="text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
-                        <button type="button" class="btn btn-outline" style="width: 100%;" onclick="demoLogin()">
-                            <i class="fas fa-user-check"></i> Demo Hesabı ile Giriş
-                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Kayıt Ol Formu -->
-        <div id="register-page" class="login-container" style="display: none;">
-            <div class="login-form">
-                <div class="login-header">
-                    <h1 class="login-title">Kayıt Ol</h1>
-                    <p class="login-subtitle">ElektroTrack'e hoş geldiniz</p>
-                </div>
-                
-                <form id="register-form">
-                    <div class="form-group">
-                        <label class="form-label" for="register-name">Ad Soyad</label>
-                        <input type="text" class="form-control" id="register-name" placeholder="Adınızı ve soyadınızı girin" required>
+        <div id="register-page" class="container mt-5" style="display: none;">
+            <div class="row justify-content-center">
+                <div class="col-md-6"></div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title text-center mb-4">Kayıt Ol</h2>
+                            <form id="register-form">
+                                <div class="mb-3">
+                                    <label for="register-name" class="form-label">Ad Soyad</label>
+                                    <input type="text" class="form-control" id="register-name" placeholder="Adınızı ve soyadınızı girin" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="register-email" class="form-label">E-posta</label>
+                                    <input type="email" class="form-control" id="register-email" placeholder="E-posta adresinizi girin" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="register-username" class="form-label">Kullanıcı Adı</label>
+                                    <input type="text" class="form-control" id="register-username" placeholder="Kullanıcı adınızı girin" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="register-department" class="form-label">Departman</label>
+                                    <select class="form-select" id="register-department" required>
+                                        <option value="">Departman Seçin</option>
+                                        <option value="sales">Satış</option>
+                                        <option value="production">Üretim</option>
+                                        <option value="purchasing">Satın Alma</option>
+                                        <option value="quality">Kalite</option>
+                                        <option value="management">Yönetim</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="register-password" class="form-label">Şifre</label>
+                                    <input type="password" class="form-control" id="register-password" placeholder="Şifre oluşturun" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="register-password-confirm" class="form-label">Şifre Tekrar</label>
+                                    <input type="password" class="form-control" id="register-password-confirm" placeholder="Şifreyi tekrar girin" required>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary">Kayıt Ol</button>
+                                </div>
+                                <div class="mt-3 text-center">
+                                    Zaten hesabınız var mı? <a href="#" onclick="showLogin()">Giriş Yap</a>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="register-email">E-posta</label>
-                        <input type="email" class="form-control" id="register-email" placeholder="E-posta adresinizi girin" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="register-username">Kullanıcı Adı</label>
-                        <input type="text" class="form-control" id="register-username" placeholder="Kullanıcı adınızı girin" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="register-department">Departman</label>
-                        <select class="form-control" id="register-department" required>
-                            <option value="">Departman Seçin</option>
-                            <option value="sales">Satış</option>
-                            <option value="production">Üretim</option>
-                            <option value="purchasing">Satın Alma</option>
-                            <option value="quality">Kalite</option>
-                            <option value="management">Yönetim</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="register-password">Şifre</label>
-                        <input type="password" class="form-control" id="register-password" placeholder="Şifre oluşturun" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="register-password-confirm">Şifre Tekrar</label>
-                        <input type="password" class="form-control" id="register-password-confirm" placeholder="Şifreyi tekrar girin" required>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Kayıt Ol</button>
-                </form>
-                
-                <div class="login-footer">
-                    Zaten hesabınız var mı? <a href="#" onclick="showLogin()">Giriş Yap</a>
                 </div>
             </div>
         </div>
 
         <!-- Şifremi Unuttum Formu -->
-        <div id="forgot-password-page" class="login-container" style="display: none;">
-            <div class="login-form">
-                <div class="login-header">
-                    <h1 class="login-title">Şifremi Unuttum</h1>
-                    <p class="login-subtitle">Şifre sıfırlama bağlantısı için e-posta adresinizi girin</p>
-                </div>
-                
-                <form id="forgot-password-form">
-                    <div class="form-group">
-                        <label class="form-label" for="forgot-email">E-posta</label>
-                        <input type="email" class="form-control" id="forgot-email" placeholder="E-posta adresinizi girin" required>
+        <div id="forgot-password-page" class="container mt-5" style="display: none;">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h2 class="card-title text-center mb-4">Şifremi Unuttum</h2>
+                            <p class="text-center">Şifre sıfırlama bağlantısı için e-posta adresinizi girin</p>
+                            <form id="forgot-password-form">
+                                <div class="mb-3">
+                                    <label for="forgot-email" class="form-label">E-posta</label>
+                                    <input type="email" class="form-control" id="forgot-email" placeholder="E-posta adresinizi girin" required>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary">Şifre Sıfırlama Bağlantısı Gönder</button>
+                                </div>
+                                <div class="mt-3 text-center">
+                                    <a href="#" onclick="showLogin()">Giriş sayfasına dön</a>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                    
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Şifre Sıfırlama Bağlantısı Gönder</button>
-                </form>
-                
-                <div class="login-footer">
-                    <a href="#" onclick="showLogin()">Giriş sayfasına dön</a>
                 </div>
             </div>
         </div>
@@ -144,40 +140,64 @@
         <!-- Ana Uygulama -->
         <div id="main-app" style="display: none;">
             <!-- Navbar -->
-            <div class="navbar">
-                <div class="navbar-brand" onclick="showPage('dashboard')">ElektroTrack</div>
-                <div class="navbar-menu">
-                    <div class="navbar-item" onclick="showPage('dashboard')">Kontrol Paneli</div>
-                    <div class="navbar-item" onclick="showPage('sales')">Satış</div>
-                    <div class="navbar-item" onclick="window.location.href='order-form.html'">Yeni Sipariş</div>
-                    <div class="navbar-item" onclick="showPage('projects')">Projeler</div>
-                    <div class="navbar-item" onclick="showPage('production')">Üretim</div>
-                    <div class="navbar-item" onclick="showPage('stock')">Stok</div>
-                    <div class="navbar-item" onclick="showPage('purchasing')">Satın Alma</div>
-                    <div class="navbar-item" onclick="showPage('quality')">Kalite</div>
-                    <div class="navbar-item" onclick="showPage('reports')">Raporlar</div>
-                    <div class="navbar-item" onclick="showPage('notes')">Notlar</div>
-                    <div class="navbar-item" onclick="showPage('ai')">Yapay Zeka</div>
-                </div>
-                <div class="user-menu">
-                    <div class="user-avatar" onclick="toggleUserMenu()">M</div>
-                    <div id="user-dropdown" class="user-dropdown">
-                        <div class="user-dropdown-item" onclick="showPage('profile')">
-                            <i class="fas fa-user" style="margin-right: 0.5rem;"></i>
-                            <span>Profilim</span>
-                        </div>
-                        <div class="user-dropdown-item" onclick="showPage('settings')">
-                            <i class="fas fa-cog" style="margin-right: 0.5rem;"></i>
-                            <span>Ayarlar</span>
-                        </div>
-                        <div class="user-dropdown-divider"></div>
-                        <div class="user-dropdown-item" onclick="logout()">
-                            <i class="fas fa-sign-out-alt" style="margin-right: 0.5rem;"></i>
-                            <span>Çıkış Yap</span>
-                        </div>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#" onclick="showPage('dashboard')">ElektroTrack</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" onclick="showPage('dashboard')">Kontrol Paneli</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" onclick="showPage('sales')">Satış</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="order-form.html">Yeni Sipariş</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" onclick="showPage('projects')">Projeler</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" onclick="showPage('production')">Üretim</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" onclick="showPage('stock')">Stok</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" onclick="showPage('purchasing')">Satın Alma</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" onclick="showPage('quality')">Kalite</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" onclick="showPage('reports')">Raporlar</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" onclick="showPage('notes')">Notlar</a>
+                            </li>
+                            <li class="nav-item"></li>
+                                <a class="nav-link" href="#" onclick="showPage('ai')">Yapay Zeka</a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user-circle"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" href="#" onclick="showPage('profile')"><i class="fas fa-user me-2"></i>Profilim</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="showPage('settings')"><i class="fas fa-cog me-2"></i>Ayarlar</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Çıkış Yap</a></li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-            </div>
+            </nav>
 
             <!-- Ana içerik alanı -->
             <div class="container">
@@ -186,7 +206,7 @@
                     <div class="page-header">
                         <h1 class="page-title">Kontrol Paneli</h1>
                         <div>
-                            <button class="btn btn-outline" onclick="refreshData()">
+                            <button class="btn btn-outline-primary" onclick="refreshData()">
                                 <i class="fas fa-sync-alt"></i>
                                 <span>Yenile</span>
                             </button>
@@ -196,53 +216,42 @@
                             </button>
                         </div>
                     </div>
+                    
                     <!-- İstatistik Kartları -->
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon stat-icon-primary">
-                                <i class="fas fa-clipboard-list"></i>
-                            </div>
-                            <div class="stat-content">
-                                <div class="stat-label">Aktif Siparişler</div>
-                                <div class="stat-value">24</div>
-                                <div class="stat-change stat-change-positive">
-                                    <i class="fas fa-arrow-up"></i> %8 geçen aya göre
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white mb-4">
+                                <div class="card-body">
+                                    <h5 class="card-title">Aktif Siparişler</h5>
+                                    <p class="card-text">24</p>
+                                    <a href="#" class="card-link text-white">Detaylar <i class="fas fa-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon stat-icon-warning">
-                                <i class="fas fa-exclamation-triangle"></i>
-                            </div>
-                            <div class="stat-content">
-                                <div class="stat-label">Eksik Malzemeler</div>
-                                <div class="stat-value">8</div>
-                                <div class="stat-change stat-change-negative">
-                                    <i class="fas fa-arrow-up"></i> %12 geçen aya göre
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-dark mb-4">
+                                <div class="card-body">
+                                    <h5 class="card-title">Eksik Malzemeler</h5>
+                                    <p class="card-text">8</p>
+                                    <a href="#" class="card-link text-dark">Detaylar <i class="fas fa-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon stat-icon-danger">
-                                <i class="fas fa-clock"></i>
-                            </div>
-                            <div class="stat-content">
-                                <div class="stat-label">Geciken İşler</div>
-                                <div class="stat-value">3</div>
-                                <div class="stat-change stat-change-positive">
-                                    <i class="fas fa-arrow-down"></i> %5 geçen aya göre
+                        <div class="col-md-3">
+                            <div class="card bg-danger text-white mb-4">
+                                <div class="card-body">
+                                    <h5 class="card-title">Geciken İşler</h5>
+                                    <p class="card-text">3</p>
+                                    <a href="#" class="card-link text-white">Detaylar <i class="fas fa-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-icon stat-icon-success">
-                                <i class="fas fa-truck"></i>
-                            </div>
-                            <div class="stat-content">
-                                <div class="stat-label">Bu Ay Teslim</div>
-                                <div class="stat-value">12</div>
-                                <div class="stat-change stat-change-positive">
-                                    <i class="fas fa-arrow-up"></i> %15 geçen aya göre
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white mb-4">
+                                <div class="card-body">
+                                    <h5 class="card-title">Bu Ay Teslim</h5>
+                                    <p class="card-text">12</p>
+                                    <a href="#" class="card-link text-white">Detaylar <i class="fas fa-arrow-right"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -250,88 +259,97 @@
                     
                     <!-- Grafikler Satırı -->
                     <div class="row">
-                        <div class="col">
+                        <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header">
-                                    <div class="card-title">Aylık Sipariş ve Teslimat</div>
+                                    <h5 class="card-title">Aylık Sipariş ve Teslimat</h5>
                                 </div>
                                 <div class="card-body">
-                                    <div style="height: 300px;">
-                                        <canvas id="orderChart"></canvas>
-                                    </div>
+                                    <canvas id="orderChart"></canvas>
                                 </div>
                             </div>
                         </div>
-                        <div class="col">
+                        <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header">
-                                    <div class="card-title">Müşteri Dağılımı</div>
+                                    <h5 class="card-title">Müşteri Dağılımı</h5>
                                 </div>
                                 <div class="card-body">
-                                    <div style="height: 300px;">
-                                        <canvas id="customerChart"></canvas>
-                                    </div>
+                                    <canvas id="customerChart"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Sipariş Filtresi -->
-                    <div class="filters">
-                        <div class="search-box">
-                            <i class="fas fa-search search-icon"></i>
-                            <input type="text" class="search-input" placeholder="Sipariş no, müşteri, hücre tipi ara..." onkeyup="filterOrders()">
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Sipariş no, müşteri, hücre tipi ara..." aria-label="Sipariş Ara" aria-describedby="search-button" onkeyup="filterOrders()">
+                                <button class="btn btn-outline-secondary" type="button" id="search-button">
+                                    <i class="fas fa-search"></i> Ara
+                                </button>
+                            </div>
                         </div>
-                        <div class="filter-item">
-                            <select class="form-control" onchange="filterOrders()">
-                                <option value="">Tüm Durumlar</option>
-                                <option value="planning">Planlama</option>
-                                <option value="waiting">Malzeme Bekleniyor</option>
-                                <option value="production">Üretimde</option>
-                                <option value="ready">Malzeme Hazır</option>
-                                <option value="testing">Test</option>
-                                <option value="completed">Tamamlandı</option>
-                            </select>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="statusFilter" class="form-label">Durum</label>
+                                <select class="form-select" id="statusFilter" onchange="filterOrders()">
+                                    <option value="">Tüm Durumlar</option>
+                                    <option value="planning">Planlama</option>
+                                    <option value="waiting">Malzeme Bekleniyor</option>
+                                    <option value="production">Üretimde</option>
+                                    <option value="ready">Malzeme Hazır</option>
+                                    <option value="testing">Test</option>
+                                    <option value="completed">Tamamlandı</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="filter-item">
-                            <select class="form-control" onchange="filterOrders()">
-                                <option value="">Tüm Müşteriler</option>
-                                <option value="AYEDAŞ">AYEDAŞ</option>
-                                <option value="ENERJİSA">ENERJİSA</option>
-                                <option value="BAŞKENT EDAŞ">BAŞKENT EDAŞ</option>
-                                <option value="TOROSLAR EDAŞ">TOROSLAR EDAŞ</option>
-                            </select>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="customerFilter" class="form-label">Müşteri</label>
+                                <select class="form-select" id="customerFilter" onchange="filterOrders()">
+                                    <option value="">Tüm Müşteriler</option>
+                                    <option value="AYEDAŞ">AYEDAŞ</option>
+                                    <option value="ENERJİSA">ENERJİSA</option>
+                                    <option value="BAŞKENT EDAŞ">BAŞKENT EDAŞ</option>
+                                    <option value="TOROSLAR EDAŞ">TOROSLAR EDAŞ</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     
                     <!-- Aktif Siparişler Tablosu -->
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">Aktif Siparişler</div>
-                            <div>
-                                <button class="btn btn-outline">
-                                    <i class="fas fa-sort"></i>
-                                    <span>Teslim Tarihine Göre Sırala</span>
+                            <h5 class="card-title">Aktif Siparişler</h5>
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-outline-secondary btn-sm">
+                                    <i class="fas fa-sort"></i> Teslim Tarihine Göre Sırala
                                 </button>
                             </div>
                         </div>
                         <div class="card-body">
-                            <div class="table-container">
-                                <table class="table" id="orders-table">
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="orders-table">
                                     <thead>
                                         <tr>
                                             <th>Sipariş No</th>
                                             <th>Müşteri</th>
-                                            <th>Eksik Malzeme</th>
+                                            <th>Hücre Tipi</th>
+                                            <th>Sipariş Tarihi</th>
                                             <th>Teslim Tarihi</th>
-                                            <th>Eklenme Tarihi</th>
+                                            <th>Hücre Sayısı</th>
                                             <th>Durum</th>
                                             <th>İşlemler</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td colspan="7" class="text-center">Yükleniyor...</td>
+                                            <td colspan="8" class="text-center">Yükleniyor...</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -341,14 +359,14 @@
 
                     <!-- İki Sütunlu Alan: Yaklaşan Teslimler ve Eksik Malzemeler -->
                     <div class="row">
-                        <div class="col">
+                        <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header">
-                                    <div class="card-title">Yaklaşan Teslimler</div>
+                                    <h5 class="card-title">Yaklaşan Teslimler</h5>
                                 </div>
                                 <div class="card-body">
-                                    <div class="table-container">
-                                        <table class="table" id="upcoming-deliveries-table">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped" id="upcoming-deliveries-table">
                                             <thead>
                                                 <tr>
                                                     <th>Sipariş No</th>
@@ -368,14 +386,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col">
+                        <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header">
-                                    <div class="card-title">Eksik Malzemeler</div>
+                                    <h5 class="card-title">Eksik Malzemeler</h5>
                                 </div>
                                 <div class="card-body">
-                                    <div class="table-container">
-                                        <table class="table" id="missing-materials-table">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped" id="missing-materials-table">
                                             <thead>
                                                 <tr>
                                                     <th>Sipariş No</th>
@@ -400,18 +418,16 @@
                     <!-- Yapay Zeka Önerileri -->
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">Yapay Zeka Önerileri</div>
+                            <h5 class="card-title">Yapay Zeka Önerileri</h5>
                         </div>
                         <div class="card-body" id="ai-recommendations">
-                            <div class="info-box">
-                                <div class="info-box-title">Üretim Optimizasyonu</div>
-                                <div class="info-box-content">
-                                    <p>RM 36 LB tipinde 3 farklı sipariş için benzer üretim adımlarını birleştirerek yaklaşık 5 iş günü tasarruf sağlayabilirsiniz.</p>
-                                    <button class="btn btn-primary btn-sm" onclick="applyOptimizationPlan()">
-                                        <i class="fas fa-check-circle"></i>
-                                        <span>Optimizasyon Planını Uygula</span>
-                                    </button>
-                                </div>
+                            <div class="alert alert-info" role="alert">
+                                <h4 class="alert-heading">Üretim Optimizasyonu</h4>
+                                <p>RM 36 LB tipinde 3 farklı sipariş için benzer üretim adımlarını birleştirerek yaklaşık 5 iş günü tasarruf sağlayabilirsiniz.</p>
+                                <hr>
+                                <button class="btn btn-success btn-sm" onclick="applyOptimizationPlan()">
+                                    <i class="fas fa-check-circle"></i> Optimizasyon Planını Uygula
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -420,14 +436,14 @@
                 <!-- Diğer sayfalar burada yer alacak... -->
                 
                 <!-- Satış Sayfası -->
-                <div id="sales-page" class="page">
+                <div id="sales-page" class="page"></div>
                     <!-- Satış sayfası içeriği buraya eklenecek -->
-                    <div class="page-header">
+                    <div class="page-header"></div>
                         <h1 class="page-title">Satış</h1>
                     </div>
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title">Satış İstatistikleri</div>
+                            <h5 class="card-title">Satış İstatistikleri</h5>
                         </div>
                         <div class="card-body">
                             <p>Satış sayfası içeriği burada olacak.</p>
@@ -448,7 +464,7 @@
                 <div class="chatbot-header">
                     <div class="chatbot-title">
                         <i class="fas fa-robot"></i>
-                        <span>Yardım Asistanı</span>
+                        <span>Akıllı Asistan</span>
                     </div>
                     <button class="chatbot-close" onclick="toggleChatbot()">
                         <i class="fas fa-times"></i>
@@ -456,7 +472,7 @@
                 </div>
                 <div class="chatbot-body" id="chatbot-body">
                     <div class="chat-message bot">
-                        Merhaba! Ben ElektroTrack asistanınızım. Size nasıl yardımcı olabilirim?
+                        Merhaba! Ben ElektroTrack'in yapay zeka destekli asistanıyım. Size nasıl yardımcı olabilirim?
                     </div>
                 </div>
                 <div class="chatbot-footer">
@@ -470,99 +486,120 @@
     </div>
 
     <!-- Sipariş Detay Modalı -->
-    <div id="order-detail-modal" class="modal">
-        <div class="modal-dialog">
-            <div class="modal-header">
-                <h2 class="modal-title">Sipariş Detayı: <span id="order-detail-id"></span></h2>
-                <button class="modal-close" onclick="closeModal('order-detail-modal')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="tabs">
-                    <div class="tab active" data-tab="order-info">Sipariş Bilgileri</div>
-                    <div class="tab" data-tab="materials">Malzeme Listesi</div>
-                    <div class="tab" data-tab="production">Üretim Planı</div>
-                    <div class="tab" data-tab="documents">Dökümanlar</div>
-                    <div class="tab" data-tab="notes">Notlar</div>
+    <div class="modal fade" id="order-detail-modal" tabindex="-1" aria-labelledby="orderDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderDetailModalLabel">Sipariş Detayı: <span id="order-detail-id"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
                 </div>
-                
-                <div class="tab-content active" id="order-info-content">
-                    <form id="order-general">
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label class="form-label">Sipariş No</label>
-                                    <input type="text" class="form-control" name="orderNo" readonly>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-group">
-                                    <label class="form-label">Müşteri</label>
-                                    <input type="text" class="form-control" name="customer">
-                                </div>
-                            </div>
+                <div class="modal-body">
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <button class="nav-link active" id="nav-order-tab" data-bs-toggle="tab" data-bs-target="#nav-order" type="button" role="tab" aria-controls="nav-order" aria-selected="true">Sipariş Bilgileri</button>
+                            <button class="nav-link" id="nav-materials-tab" data-bs-toggle="tab" data-bs-target="#nav-materials" type="button" role="tab" aria-controls="nav-materials" aria-selected="false">Malzeme Listesi</button>
+                            <button class="nav-link" id="nav-production-tab" data-bs-toggle="tab" data-bs-target="#nav-production" type="button" role="tab" aria-controls="nav-production" aria-selected="false">Üretim Planı</button>
+                            <button class="nav-link" id="nav-documents-tab" data-bs-toggle="tab" data-bs-target="#nav-documents" type="button" role="tab" aria-controls="nav-documents" aria-selected="false">Dökümanlar</button>
+                            <button class="nav-link" id="nav-notes-tab" data-bs-toggle="tab" data-bs-target="#nav-notes" type="button" role="tab" aria-controls="nav-notes" aria-selected="false">Notlar</button>
                         </div>
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label class="form-label">Hücre Tipi</label>
-                                    <input type="text" class="form-control" name="cellType">
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-order" role="tabpanel" aria-labelledby="nav-order-tab">
+                            <form id="order-general">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="orderNo" class="form-label">Sipariş No</label>
+                                            <input type="text" class="form-control" id="orderNo" name="orderNo" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="customer" class="form-label">Müşteri</label>
+                                            <input type="text" class="form-control" id="customer" name="customer">
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-group">
-                                    <label class="form-label">Hücre Sayısı</label>
-                                    <input type="number" class="form-control" name="cellCount">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="cellType" class="form-label">Hücre Tipi</label>
+                                            <input type="text" class="form-control" id="cellType" name="cellType">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="cellCount" class="form-label">Hücre Sayısı</label>
+                                            <input type="number" class="form-control" id="cellCount" name="cellCount">
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="orderDate" class="form-label">Sipariş Tarihi</label>
+                                            <input type="text" class="form-control" id="orderDate" name="orderDate">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="deliveryDate" class="form-label">Teslim Tarihi</label>
+                                            <input type="text" class="form-control" id="deliveryDate" name="deliveryDate">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="status" class="form-label">Durum</label>
+                                            <select class="form-select" id="status" name="status">
+                                                <option value="planning">Planlama</option>
+                                                <option value="waiting">Malzeme Bekleniyor</option>
+                                                <option value="production">Üretimde</option>
+                                                <option value="ready">Malzeme Hazır</option>
+                                                <option value="testing">Test</option>
+                                                <option value="completed">Tamamlandı</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="projectManager" class="form-label">Proje Yöneticisi</label>
+                                            <input type="text" class="form-control" id="projectManager" name="projectManager">
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label class="form-label">Sipariş Tarihi</label>
-                                    <input type="text" class="form-control" name="orderDate">
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-group">
-                                    <label class="form-label">Teslim Tarihi</label>
-                                    <input type="text" class="form-control" name="deliveryDate">
-                                </div>
-                            </div>
+                        <div class="tab-pane fade" id="nav-materials" role="tabpanel" aria-labelledby="nav-materials-tab">
+                            <p>Malzeme listesi burada olacak.</p>
                         </div>
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label class="form-label">Durum</label>
-                                    <select class="form-control" name="status">
-                                        <option value="planning">Planlama</option>
-                                        <option value="waiting">Malzeme Bekleniyor</option>
-                                        <option value="production">Üretimde</option>
-                                        <option value="ready">Malzeme Hazır</option>
-                                        <option value="testing">Test</option>
-                                        <option value="completed">Tamamlandı</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-group">
-                                    <label class="form-label">Proje Yöneticisi</label>
-                                    <input type="text" class="form-control" name="projectManager">
-                                </div>
-                            </div>
+                        <div class="tab-pane fade" id="nav-production" role="tabpanel" aria-labelledby="nav-production-tab">
+                            <p>Üretim planı burada olacak.</p>
                         </div>
-                    </form>
+                        <div class="tab-pane fade" id="nav-documents" role="tabpanel" aria-labelledby="nav-documents-tab">
+                            <p>Dökümanlar burada olacak.</p>
+                        </div>
+                        <div class="tab-pane fade" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
+                            <p>Notlar burada olacak.</p>
+                        </div>
+                    </div>
                 </div>
-                
-                <!-- Diğer tab içerikleri buraya eklenecek -->
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline" onclick="closeModal('order-detail-modal')">İptal</button>
-                <button class="btn btn-primary" onclick="saveOrderDetails()">Kaydet</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary" onclick="saveOrderDetails()">Kaydet</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript Dosyaları -->
+    <!-- Bootstrap 5 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Özel JavaScript Dosyaları -->
     <script src="js/firebase-config.js" defer></script>
     <script src="js/main.js" defer></script>
     <script src="js/auth.js" defer></script>
