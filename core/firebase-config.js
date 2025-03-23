@@ -1,6 +1,7 @@
 /**
- * firebase-config.js
- * Firebase yapılandırma ve başlatma işlemleri
+ * @file firebase-config.js
+ * @description Firebase yapılandırma ve başlatma işlemleri.
+ * Tüm uygulamanın Firebase bağlantısını ve servislerini yönetir.
  */
 
 // Firebase yapılandırması
@@ -14,85 +15,117 @@ const firebaseConfig = {
     measurementId: "G-L4TMML2WR2"
 };
 
-// Demo mod kontrolü (global olarak tanımlanmış olabilir)
-const isDemoMode = window.CONFIG?.isDemo || 
-                   window.location.hostname === 'localhost' || 
-                   window.location.hostname === '127.0.0.1' ||
-                   window.location.hostname.includes('netlify.app') ||
-                   window.location.search.includes('demo=true');
+/**
+ * Firebase servis durumu
+ * @type {Object}
+ */
+const firebaseState = {
+    isInitialized: false,        // Firebase başlatıldı mı
+    isDemo: false,               // Demo modunda mı
+    services: {                  // Servis durumları
+        auth: false,              
+        firestore: false,
+        storage: false,
+        analytics: false,
+        functions: false
+    },
+    persistenceEnabled: false,   // Çevrimdışı persistance etkinleştirildi mi
+    lastError: null              // Son hata
+};
 
-// Firebase bileşenleri için global değişkenler
+// Servis referansları için global değişkenler 
 let app, auth, db, analytics, storage, functions;
 
-// Firebase'i başlat
-async function initializeFirebase() {
-    return new Promise((resolve, reject) => {
-        try {
-            console.log('Firebase başlatılıyor...');
-            
-            // Firebase tanımlı mı kontrol et
-            if (typeof firebase === 'undefined') {
-                console.error('Firebase SDK yüklenemedi. Demo moda geçiliyor...');
-                enableDemoMode();
-                resolve(false);
-                return;
-            }
-            
-            // Firebase uygulamasını başlat
-            if (!firebase.apps.length) {
-                try {
-                    app = firebase.initializeApp(firebaseConfig);
-                    console.log("Firebase başlatıldı");
-                } catch (initError) {
-                    console.warn("Firebase başlatılamadı, demo moda geçiliyor", initError);
-                    enableDemoMode();
-                    resolve(false);
-                    return;
-                }
-            } else {
-                app = firebase.app();
-            }
-            
-            // Firebase servislerini başlat
-            try {
-                initializeFirebaseServices()
-                    .then(() => {
-                        console.log("Firebase servisleri başarıyla başlatıldı");
-                        
-                        // Demo modda olduğumuzu kontrol et ve bildirimi göster
-                        if (isDemoMode) {
-                            console.log("Demo modu aktif");
-                            showDemoModeNotification();
-                        }
-                        
-                        // İlk veri seti kontrolü - bunu başka bir fonksiyona taşıyalım
-                        checkInitialDataset()
-                            .then(() => resolve(true))
-                            .catch(error => {
-                                console.warn("İlk veri seti kontrolünde hata:", error);
-                                resolve(true); // Yine de devam etmek için true döndürüyoruz
-                            });
-                    })
-                    .catch(error => {
-                        console.error("Firebase servisleri başlatılamadı:", error);
-                        enableDemoMode();
-                        resolve(false);
-                    });
-            } catch (serviceError) {
-                console.warn("Firebase servisleri alınamadı, demo moda geçiliyor", serviceError);
-                enableDemoMode();
-                resolve(false);
-                return;
-            }
-        } catch (error) {
-            console.error("Firebase başlatma hatası:", error);
-            enableDemoMode();
-            resolve(false);
-        }
-    });
+/**
+ * Demo modu kontrolü
+ * @returns {boolean} Demo modunda mı
+ */
+function isDemoMode() {
+    return window.CONFIG?.isDemo || 
+           window.location.hostname === 'localhost' || 
+           window.location.hostname === '127.0.0.1' ||
+           window.location.hostname.includes('netlify.app') ||
+           window.location.search.includes('demo=true');
 }
 
-// Firebase servislerini başlat
+/**
+ * Firebase'i başlat
+ * @returns {Promise<boolean>} Başarılı mı
+ */
+async function initializeFirebase() {
+    try {
+        console.log('Firebase başlatılıyor...');
+        
+        // Demo modu kontrolü
+        firebaseState.isDemo = isDemoMode();
+        
+        // Firebase tanımlı mı kontrol et
+        if (typeof firebase === 'undefined') {
+            console.error('Firebase SDK yüklenemedi. Demo moda geçiliyor...');
+            enableDemoMode();
+            return false;
+        }
+        
+        // Firebase uygulamasını başlat
+        if (!firebase.apps.length) {
+            try {
+                app = firebase.initializeApp(firebaseConfig);
+                console.log("Firebase başlatıldı");
+            } catch (initError) {
+                console.warn("Firebase başlatılamadı, demo moda geçiliyor", initError);
+                enableDemoMode();
+                return false;
+            }
+        } else {
+            app = firebase.app();
+        }
+        
+        // Firebase servislerini başlat
+        try {
+            const result = await initializeFirebaseServices();
+            
+            if (result) {
+                console.log("Firebase servisleri başarıyla başlatıldı");
+                
+                // Demo modda olduğumuzu kontrol et ve bildirimi göster
+                if (firebaseState.isDemo) {
+                    console.log("Demo modu aktif");
+                    showDemoModeNotification();
+                }
+                
+                // İlk veri seti kontrolü
+                try {
+                    await checkInitialDataset();
+                } catch (datasetError) {
+                    console.warn("İlk veri seti kontrolünde hata:", datasetError);
+                    // Yine de devam ediyoruz
+                }
+                
+                // Firebase başarıyla başlatıldı
+                firebaseState.isInitialized = true;
+                return true;
+            } else {
+                console.error("Firebase servisleri başlatılamadı");
+                enableDemoMode();
+                return false;
+            }
+        } catch (serviceError) {
+            console.warn("Firebase servisleri alınamadı, demo moda geçiliyor", serviceError);
+            enableDemoMode();
+            return false;
+        }
+    } catch (error) {
+        console.error("Firebase başlatma hatası:", error);
+        firebaseState.lastError = error;
+        enableDemoMode();
+        return false;
+    }
+}
+
+/**
+ * Firebase servislerini başlat
+ * @returns {Promise<boolean>} Başarılı mı
+ */
 async function initializeFirebaseServices() {
     try {
         // Auth servisi
@@ -100,10 +133,17 @@ async function initializeFirebaseServices() {
             auth = firebase.auth();
             
             // Auth persistance modunu ayarla
-            await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-            console.log("Firebase Auth başlatıldı ve persistance ayarlandı");
+            try {
+                await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+                console.log("Firebase Auth başlatıldı ve persistance ayarlandı");
+                firebaseState.services.auth = true;
+            } catch (authError) {
+                console.warn("Auth persistance ayarlanamadı:", authError);
+                firebaseState.services.auth = false;
+            }
         } else {
             console.warn("Firebase Auth modülü bulunamadı");
+            firebaseState.services.auth = false;
         }
         
         // Firestore servisi
@@ -116,6 +156,7 @@ async function initializeFirebaseServices() {
                     synchronizeTabs: true
                 });
                 console.log("Firestore çevrimdışı persistance etkinleştirildi");
+                firebaseState.persistenceEnabled = true;
             } catch (err) {
                 if (err.code === 'failed-precondition') {
                     console.warn("Birden fazla sekme açık, çevrimdışı persistance devre dışı");
@@ -124,34 +165,46 @@ async function initializeFirebaseServices() {
                 } else {
                     console.error("Firestore persistance hatası:", err);
                 }
+                firebaseState.persistenceEnabled = false;
             }
             
             console.log("Firestore başlatıldı");
+            firebaseState.services.firestore = true;
         } else {
             console.warn("Firestore modülü bulunamadı");
+            firebaseState.services.firestore = false;
         }
         
         // Storage servisi (varsa)
         if (firebase.storage) {
             storage = firebase.storage();
             console.log("Firebase Storage başlatıldı");
+            firebaseState.services.storage = true;
+        } else {
+            firebaseState.services.storage = false;
         }
         
         // Cloud Functions servisi (varsa)
         if (firebase.functions) {
             functions = firebase.functions();
             console.log("Firebase Functions başlatıldı");
+            firebaseState.services.functions = true;
+        } else {
+            firebaseState.services.functions = false;
         }
         
         // Analytics servisi (varsa)
         if (firebase.analytics) {
             analytics = firebase.analytics();
             console.log("Firebase Analytics başlatıldı");
+            firebaseState.services.analytics = true;
             
             // Demo modu takibi için özel event
-            if (isDemoMode) {
+            if (firebaseState.isDemo) {
                 analytics.logEvent('demo_mode_enabled');
             }
+        } else {
+            firebaseState.services.analytics = false;
         }
         
         // Global değişkenlere ata (bazı eski kodlar için gerekli olabilir)
@@ -165,15 +218,19 @@ async function initializeFirebaseServices() {
         return true;
     } catch (error) {
         console.error("Firebase servisleri başlatılamadı:", error);
+        firebaseState.lastError = error;
         throw error;
     }
 }
 
-// İlk veri seti kontrolü (demo veriler için)
+/**
+ * İlk veri seti kontrolü (demo veriler için)
+ * @returns {Promise<boolean>} Başarılı mı
+ */
 async function checkInitialDataset() {
     try {
         // Eğer demo modda değilsek atla
-        if (!isDemoMode) {
+        if (!firebaseState.isDemo) {
             return true;
         }
         
@@ -212,6 +269,9 @@ async function checkInitialDataset() {
                     console.log("Demo veriler başarıyla yüklendi");
                 } else {
                     console.warn("seedSampleData fonksiyonu bulunamadığı için demo veriler yüklenemedi");
+                    
+                    // Alternatif olarak, gerektiğinde örnek verileri yüklemek için bir mock-data.js dosyası ekleyebiliriz
+                    await loadMockData();
                 }
             } catch (error) {
                 console.error("Demo verileri yüklenirken hata:", error);
@@ -225,12 +285,57 @@ async function checkInitialDataset() {
     }
 }
 
-// Demo modunu etkinleştir
+/**
+ * Mock veri yükleme
+ * @returns {Promise<boolean>} Başarılı mı
+ */
+async function loadMockData() {
+    try {
+        console.log("Mock veriler yükleniyor...");
+        
+        // Mock veriler için script yükle
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'js/mock-data.js';
+            script.onload = () => {
+                console.log("Mock veriler script'i yüklendi");
+                
+                // Mock veri fonksiyonu varsa çağır
+                if (typeof initMockData === 'function') {
+                    initMockData()
+                        .then(() => resolve(true))
+                        .catch(err => {
+                            console.error("Mock veri yükleme hatası:", err);
+                            resolve(false);
+                        });
+                } else {
+                    console.warn("initMockData fonksiyonu bulunamadı");
+                    resolve(false);
+                }
+            };
+            script.onerror = (err) => {
+                console.error("Mock veriler script'i yüklenemedi:", err);
+                reject(err);
+            };
+            
+            document.body.appendChild(script);
+        });
+    } catch (error) {
+        console.error("Mock veri yükleme hatası:", error);
+        return false;
+    }
+}
+
+/**
+ * Demo modunu etkinleştir
+ */
 function enableDemoMode() {
     console.log("Demo modu etkinleştiriliyor...");
     
     // Demo modunda olduğumuzu işaretle
-    window.isDemoMode = true;
+    firebaseState.isDemo = true;
+    window.CONFIG = window.CONFIG || {};
+    window.CONFIG.isDemo = true;
     
     // URL'e demo parametresini ekle
     const currentUrl = new URL(window.location.href);
@@ -251,34 +356,46 @@ function enableDemoMode() {
     showDemoModeNotification();
 }
 
-// Mock Firebase yükle
+/**
+ * Mock Firebase yükle
+ * @returns {Promise<boolean>} Başarılı mı
+ */
 function loadMockFirebase() {
-    const scriptElement = document.createElement('script');
-    scriptElement.src = 'js/mock-firebase.js';
-    scriptElement.async = true;
-    
-    scriptElement.onload = () => {
-        console.log("Mock Firebase yüklendi");
+    return new Promise((resolve, reject) => {
+        const scriptElement = document.createElement('script');
+        scriptElement.src = 'js/mock-firebase.js';
+        scriptElement.async = true;
         
-        // Firebase yoksa Mock Firebase'i global firebase değişkenine ata
-        if (typeof firebase === 'undefined' && typeof mockFirebase !== 'undefined') {
-            window.firebase = mockFirebase;
-        }
+        scriptElement.onload = () => {
+            console.log("Mock Firebase yüklendi");
+            
+            // Firebase yoksa Mock Firebase'i global firebase değişkenine ata
+            if (typeof firebase === 'undefined' && typeof mockFirebase !== 'undefined') {
+                window.firebase = mockFirebase;
+                
+                // Başlatmayı yeniden dene
+                setTimeout(() => {
+                    initializeFirebase()
+                        .then(result => resolve(result))
+                        .catch(err => reject(err));
+                }, 500);
+            } else {
+                resolve(false);
+            }
+        };
         
-        // Başlatmayı yeniden dene
-        setTimeout(() => {
-            initializeFirebase();
-        }, 500);
-    };
-    
-    scriptElement.onerror = (error) => {
-        console.error("Mock Firebase yüklenemedi:", error);
-    };
-    
-    document.body.appendChild(scriptElement);
+        scriptElement.onerror = (error) => {
+            console.error("Mock Firebase yüklenemedi:", error);
+            reject(error);
+        };
+        
+        document.body.appendChild(scriptElement);
+    });
 }
 
-// Demo modu bildirimini göster
+/**
+ * Demo modu bildirimini göster
+ */
 function showDemoModeNotification() {
     const demoModeNotification = document.getElementById('demo-mode-notification');
     if (demoModeNotification) {
@@ -311,7 +428,32 @@ function showDemoModeNotification() {
     }
 }
 
-// DOMContentLoaded olayı için dinleyici
+/**
+ * Firebase servislerine erişim sağla
+ * @returns {Object} Firebase servisleri
+ */
+function getFirebaseServices() {
+    return {
+        app,
+        auth,
+        db,
+        storage,
+        functions,
+        analytics,
+        isDemo: firebaseState.isDemo,
+        isInitialized: firebaseState.isInitialized
+    };
+}
+
+/**
+ * Firebase durum bilgisini al
+ * @returns {Object} Firebase durum bilgisi
+ */
+function getFirebaseState() {
+    return { ...firebaseState };
+}
+
+// Sayfa yüklendiğinde Firebase'i başlat
 document.addEventListener('DOMContentLoaded', async function() {
     try {
         // Firebase'i başlatmayı dene
@@ -358,7 +500,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         console.log("Kullanıcı oturum açmamış");
                         
                         // Demo modunda otomatik giriş yap
-                        if (isDemoMode) {
+                        if (firebaseState.isDemo) {
                             console.log("Demo modu için otomatik giriş yapılıyor...");
                             
                             if (typeof demoLogin === 'function') {
@@ -393,7 +535,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         }
                     }
                 });
-            } else if (isDemoMode) {
+            } else if (firebaseState.isDemo) {
                 console.log("Firebase Auth yok, demo modunda doğrudan giriş yapılıyor");
                 
                 // Demo kullanıcısı oluştur
@@ -427,7 +569,7 @@ setTimeout(() => {
     // Hala login sayfasındaysak ve demo modunda değilsek
     if (document.getElementById('login-page') && 
         document.getElementById('login-page').style.display !== 'none' && 
-        !isDemoMode) {
+        !firebaseState.isDemo) {
         
         console.warn("Firebase bağlantı zaman aşımı, demo moduna geçiliyor");
         enableDemoMode();
@@ -458,5 +600,13 @@ setTimeout(() => {
     }
 }, 10000); // 10 saniye timeout
 
-// Global erişim için
-window.initializeFirebase = initializeFirebase;
+// Dışa aktarma işlemleri
+export {
+    initializeFirebase,
+    enableDemoMode,
+    showDemoModeNotification,
+    getFirebaseServices,
+    getFirebaseState,
+    firebaseState,
+    firebaseConfig
+};
