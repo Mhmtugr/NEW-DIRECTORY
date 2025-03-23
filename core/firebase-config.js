@@ -459,4 +459,4 @@ setTimeout(() => {
 }, 10000); // 10 saniye timeout
 
 // Global erişim için
-window.initializeFirebase = initializeFirebase; 
+window.initializeFirebase = initializeFirebase;
