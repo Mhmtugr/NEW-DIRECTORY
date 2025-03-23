@@ -1,4 +1,4 @@
- /**
+/**
  * app.js 
  * Tüm uygulamayı başlatan ve script yükleme işlemini yöneten ana script
  */
