@@ -305,11 +305,13 @@ async function resetPassword(email = null) {
 }
 
 /**
- * Kullanıcı kaydı
- * @param {Object} userData - Kullanıcı bilgileri
+ * Kullanıcı kaydı yap
+ * @param {string} email - Kullanıcı e-posta adresi
+ * @param {string} password - Kullanıcı şifresi
+ * @param {string} name - Kullanıcı adı
  * @returns {Promise} - Kayıt işlemi sonucu
  */
-async function register(userData = null) {
+async function register(email, password, name) {
     try {
         // İşlem durumunu güncelle
         authState.isProcessing = true;
@@ -539,10 +541,9 @@ async function changePassword(currentPassword, newPassword) {
 }
 
 /**
- * Çıkış yap
- * @returns {Promise} - Çıkış işlemi sonucu
+ * Kullanıcı çıkışı yap
  */
-async function logout() {
+function logout() {
     try {
         // İşlem durumunu güncelle
         authState.isProcessing = true;
