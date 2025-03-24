@@ -18,6 +18,9 @@
     --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --rounded: 0.5rem;
+    --rounded-sm: 0.25rem;
+    --rounded-lg: 1rem;
 }
 
 * {
@@ -31,6 +34,20 @@ body {
     background-color: #f1f5f9;
     color: var(--dark);
     line-height: 1.5;
+    min-height: 100vh;
+}
+
+/* Dark theme variables */
+body.dark-theme {
+    --primary: #3b82f6;
+    --primary-light: #60a5fa;
+    --primary-dark: #2563eb;
+    --light: #1a202c;
+    --dark: #f1f5f9;
+    --border: #2d3748;
+    --border-light: #4a5568;
+    background-color: #0f172a;
+    color: #f1f5f9;
 }
 
 /* Container */
@@ -38,6 +55,31 @@ body {
     max-width: 1400px;
     margin: 0 auto;
     padding: 1.5rem;
+}
+
+/* Flexbox utilities */
+.d-flex {
+    display: flex;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.justify-content-center {
+    justify-content: center;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
 }
 
 /* Page */
@@ -59,78 +101,12 @@ body {
 .page-title {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #37474f;
+    color: var(--dark);
 }
 
-/* Layout Utilities */
-.row {
-    display: flex;
-    flex-wrap: wrap;
-    margin: -0.75rem;
-}
-
-.col {
-    flex: 1;
-    padding: 0.75rem;
-    min-width: 300px;
-}
-
-.col-fixed {
-    flex: 0 0 350px;
-    padding: 0.75rem;
-}
-
-.col-large {
-    flex: 2;
-    padding: 0.75rem;
-    min-width: 450px;
-}
-
-/* Navbar */
+/* Navbar styling */
 .navbar {
-    background-color: #263238;
-    color: white;
     box-shadow: var(--shadow);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-.navbar-brand {
-    font-size: 1.25rem;
-    font-weight: 500;
-    padding: 0.75rem 1.5rem;
-    display: inline-block;
-    cursor: pointer;
-}
-
-.navbar-menu {
-    display: inline-flex;
-    overflow-x: auto;
-    white-space: nowrap;
-    max-width: calc(100% - 300px);
-}
-
-.navbar-item {
-    color: rgba(255, 255, 255, 0.8);
-    padding: 1rem 1.25rem;
-    text-decoration: none;
-    display: inline-block;
-    font-weight: 500;
-    transition: color 0.3s, background-color 0.3s;
-    cursor: pointer;
-}
-
-.navbar-item.active, .navbar-item:hover {
-    color: white;
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* User Menu */
-.user-menu {
-    float: right;
-    padding: 0.75rem 1.5rem;
-    position: relative;
 }
 
 .user-avatar {
@@ -146,32 +122,437 @@ body {
     cursor: pointer;
 }
 
-.user-dropdown {
-    position: absolute;
-    top: 100%;
-    right: 0;
+/* Card styling enhancements */
+.card {
     background-color: white;
-    box-shadow: var(--shadow);
     border-radius: var(--rounded);
-    min-width: 200px;
-    display: none;
-    z-index: 1000;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+    transition: box-shadow 0.3s;
 }
 
-.user-dropdown-item {
-    padding: 0.75rem 1rem;
+.card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.card-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
     color: var(--dark);
-    font-size: 0.875rem;
+    margin-bottom: 0;
+}
+
+/* Table enhancements */
+.table-hover tbody tr {
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.2s;
 }
 
-.user-dropdown-item:hover {
-    background-color: var(--light);
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.03);
 }
 
-.user-dropdown-divider {
-    height: 1px;
-    background-color: var(--border);
-    margin: 0.25rem 0;
+.dark-theme .table-hover tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Badge styling */
+.badge {
+    display: inline-block;
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+    font-weight: 600;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+}
+
+.badge-primary {
+    background-color: var(--primary);
+}
+
+.badge-secondary {
+    background-color: var(--secondary);
+}
+
+.badge-success {
+    background-color: var(--success);
+}
+
+.badge-danger {
+    background-color: var(--danger);
+}
+
+.badge-warning {
+    background-color: var(--warning);
+    color: #000;
+}
+
+.badge-info {
+    background-color: var(--info);
+}
+
+/* Button enhancements */
+.btn {
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+/* Login page enhancements */
+#login-page, #register-page, #forgot-password-page {
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Chatbot styling */
+.chatbot-trigger {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+    z-index: 1000;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.chatbot-trigger:hover {
+    transform: scale(1.1);
+    box-shadow: var(--shadow-lg);
+}
+
+.chatbot-window {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 350px;
+    height: 500px;
+    border-radius: var(--rounded);
+    background-color: white;
+    box-shadow: var(--shadow-lg);
+    z-index: 1001;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chatbot-header {
+    background-color: var(--primary);
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chatbot-body {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+}
+
+.chat-message {
+    max-width: 75%;
+    padding: 0.75rem 1rem;
+    border-radius: var(--rounded);
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.chat-message.bot {
+    background-color: white;
+    border: 1px solid var(--border-light);
+    margin-right: auto;
+    border-top-left-radius: 0;
+}
+
+.chat-message.user {
+    background-color: var(--primary);
+    color: white;
+    margin-left: auto;
+    border-top-right-radius: 0;
+}
+
+.chatbot-footer {
+    padding: 0.75rem;
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.chatbot-input {
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: var(--rounded-sm);
+    padding: 0.5rem 1rem;
+    outline: none;
+}
+
+.chatbot-input:focus {
+    border-color: var(--primary);
+}
+
+.chatbot-send {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Typing indicator in chatbot */
+.typing-indicator {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+}
+
+.typing-indicator span {
+    width: 8px;
+    height: 8px;
+    background-color: #ccc;
+    border-radius: 50%;
+    display: inline-block;
+    animation: typingAnimation 1.5s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+@keyframes typingAnimation {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.6;
+    }
+    30% {
+        transform: translateY(-4px);
+        opacity: 1;
+    }
+}
+
+/* Workflow and status visualization */
+.workflow {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    padding: 1.5rem 0;
+    margin: 1rem 0 2rem;
+}
+
+.workflow::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--border-light);
+    z-index: 1;
+}
+
+.workflow-step {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    flex: 1;
+}
+
+.workflow-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: white;
+    border: 2px solid var(--border);
+    margin: 0 auto 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: var(--secondary);
+}
+
+.workflow-label {
+    font-size: 0.8rem;
+    color: var(--secondary);
+    max-width: 80px;
+    margin: 0 auto;
+}
+
+.workflow-step.completed .workflow-icon {
+    background-color: var(--success);
+    border-color: var(--success);
+    color: white;
+}
+
+.workflow-step.active .workflow-icon {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+/* Helper utilities */
+.text-center {
+    text-align: center;
+}
+
+.fw-bold {
+    font-weight: bold;
+}
+
+.text-danger {
+    color: var(--danger) !important;
+}
+
+.text-warning {
+    color: var(--warning) !important;
+}
+
+.text-success {
+    color: var(--success) !important;
+}
+
+/* Dark theme adaptations for components */
+.dark-theme .card,
+.dark-theme .modal-content {
+    background-color: #1e293b;
+}
+
+.dark-theme .card-header,
+.dark-theme .modal-header {
+    background-color: #334155;
+    border-color: var(--border);
+}
+
+.dark-theme .table {
+    color: var(--dark);
+}
+
+.dark-theme .table thead th {
+    background-color: #334155;
+    color: #f8fafc;
+}
+
+.dark-theme .form-control,
+.dark-theme .form-select {
+    background-color: #1a202c;
+    border-color: var(--border);
+    color: var(--dark);
+}
+
+.dark-theme .form-control:focus,
+.dark-theme .form-select:focus {
+    background-color: #1a202c;
+    color: var(--dark);
+    border-color: var(--primary);
+}
+
+.dark-theme .chatbot-body {
+    background-color: #1a202c;
+}
+
+.dark-theme .chat-message.bot {
+    background-color: #334155;
+    color: white;
+    border-color: #475569;
+}
+
+/* Toast styling */
+.toast {
+    background-color: white;
+    border-radius: var(--rounded);
+    box-shadow: var(--shadow-md);
+    border-left: 4px solid var(--primary);
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+    max-width: 350px;
+}
+
+.toast .toast-header {
+    padding: 0.5rem 1rem;
+}
+
+.toast .toast-body {
+    padding: 0.75rem 1rem;
+}
+
+.dark-theme .toast {
+    background-color: #334155;
+    color: white;
+}
+
+/* Responsive layout adjustments */
+@media (max-width: 992px) {
+    .workflow {
+        flex-direction: column;
+    }
+    
+    .workflow::after {
+        display: none;
+    }
+    
+    .workflow-step {
+        display: flex;
+        align-items: center;
+        text-align: left;
+        margin-bottom: 1rem;
+    }
+    
+    .workflow-icon {
+        margin: 0 1rem 0 0;
+    }
+    
+    .workflow-label {
+        margin: 0;
+        max-width: none;
+    }
 }
