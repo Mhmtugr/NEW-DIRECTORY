@@ -574,4 +574,39 @@ setTimeout(() => {
         console.warn("Firebase bağlantı zaman aşımı, demo moduna geçiliyor");
         enableDemoMode();
         
-        //
+        // Demo kullanıcısıyla otomatik giriş yap
+        if (typeof demoLogin === 'function') {
+            demoLogin();
+        } else {
+            // Manuel demo giriş
+            window.currentUser = {
+                uid: 'demo-user-1',
+                email: 'demo@elektrotrack.com',
+                displayName: 'Demo Kullanıcı'
+            };
+            
+            // Ana uygulamayı göster
+            const mainApp = document.getElementById('main-app');
+            const loginPage = document.getElementById('login-page');
+            
+            if (mainApp) mainApp.style.display = 'block';
+            if (loginPage) loginPage.style.display = 'none';
+            
+            // Dashboard verilerini yükle
+            if (typeof loadDashboardData === 'function') {
+                loadDashboardData();
+            }
+        }
+    }
+}, 10000); // 10 saniye timeout
+
+// Dışa aktarma işlemleri
+export {
+    initializeFirebase,
+    enableDemoMode,
+    showDemoModeNotification,
+    getFirebaseServices,
+    getFirebaseState,
+    firebaseState,
+    firebaseConfig
+};
